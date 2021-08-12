@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fetch/api/photos.dart';
 import 'package:flutter_fetch/models/Photo.dart';
+// import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class PhotosListView extends StatefulWidget {
   // const PhotosListView({Key? key}) : super(key: key);
@@ -18,19 +19,28 @@ class _MyAppState extends State<PhotosListView> {
     futureAlbum = fetchAlbum();
   }
 
+  Future<void> _refreshList() async {
+    setState(() {
+      futureAlbum = fetchAlbum();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Photo>>(
-        future: futureAlbum,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Photo>? data = snapshot.data;
-            return _listView(data);
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-          return const CircularProgressIndicator();
-        });
+    // LiquidPullToRefresh
+    return RefreshIndicator(
+        onRefresh: () => _refreshList(),
+        child: FutureBuilder<List<Photo>>(
+            future: futureAlbum,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Photo>? data = snapshot.data;
+                return _listView(data);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const CircularProgressIndicator();
+            }));
   }
 }
 
