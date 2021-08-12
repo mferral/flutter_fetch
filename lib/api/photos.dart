@@ -5,12 +5,10 @@ import 'dart:math';
 
 // Future<List<dynamic>> fetchAlbum() async {
 Future<List<Photo>> fetchAlbum() async {
-  print('Refresh');
+  await Future.delayed(Duration(seconds: 4));
   Random random = new Random();
   int randomNumber = random.nextInt(100);
   int ini = randomNumber;
-
-  print('Refresh');
   String apiUrl =
       'https://jsonplaceholder.typicode.com/photos?_start=$ini&_limit=20';
   print(apiUrl);
